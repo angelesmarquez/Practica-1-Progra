@@ -6,7 +6,7 @@ import javax.swing.JOptionPane;
 
 public class Embalse {
     //No lleva atributos, solo variables
-    public static int numEmb=3;
+    public static int numEmb=6;
     
     //Creacion los vectores, en Java los vectores son objetos, por lo tanto su declaracion e inicializacion
     //se pueden hacer en un solo paso o por separado (conmunmente en la misma linea).
@@ -107,11 +107,11 @@ public class Embalse {
         System.out.println("El Emblase "+posCodMin+" tiene el nivel de turbidez mas bajo: "+min);
         
         //Por color
-        System.out.println("El Porcentaje de Embalses en la Categoria Azul: "+(float)(contAzul*100f/numEmb)+"%");
-        System.out.println("El Porcentaje de Embalses en la Categoria Verde: "+(float)(contVerde*100f/numEmb)+"%");
-        System.out.println("El Porcentaje de Embalses en la Categoria Amarillo: "+(float)(contAmarillo*100f/numEmb)+"%");
-        System.out.println("El Porcentaje de Embalses en la Categoria Naranja: "+(float)(contNaranja*100f/numEmb)+"%");
-        System.out.println("El Porcentaje de Embalses en la Categoria Rojo: "+(float)(contRojo*100f/numEmb)+"%");
+        System.out.printf("El Porcentaje de Embalses en la Categoria Azul: %.2f%%\n", (float)(contAzul * 100f / numEmb));
+        System.out.printf("El Porcentaje de Embalses en la Categoria Verde: %.2f%%\n", (float)(contVerde * 100f / numEmb));
+        System.out.printf("El Porcentaje de Embalses en la Categoria Amarillo: %.2f%%\n", (float)(contAmarillo * 100f / numEmb));
+        System.out.printf("El Porcentaje de Embalses en la Categoria Naranja: %.2f%%\n", (float)(contNaranja * 100f / numEmb));
+        System.out.printf("El Porcentaje de Embalses en la Categoria Rojo: %.2f%%\n", (float)(contRojo * 100f / numEmb));
         
         //Embalses en estado Crítico
         System.out.println("Hay "+(contNaranja+contRojo)+" cantidad de embalses en estado crítico");
@@ -136,22 +136,21 @@ public class Embalse {
            
            switch(op){
                case 1:
-                buscarCodigo(codigo,numEmb,nivturbidez,estdAlerta);
-                break;
+                    buscarCodigo(codigo,numEmb,nivturbidez,estdAlerta);
+                    break;
                case 2:
-                InformeTurbidez(numEmb,nivturbidez,codigo,clasificacion);
-                break;
+                    InformeTurbidez(numEmb,nivturbidez,codigo,clasificacion);
+                    break;
+               default:
+                   System.out.println("Número equivocado, por favor revise las opciones ddel menú");
+                   break;
            }
-           
-       }while(op!=3); 
-        
-        
-        
+       }while(op!=3);     
     }//Main
     
-    //Métodos (Switch)
+    //Métodos
     
-    //Metodo 1. Buscar Codigo
+    //Switch Metodo 1. Buscar Codigo
     public static void buscarCodigo(String codigo[],int numEmb,int turbidez[],String alerta[]){
         Scanner teclado = new Scanner(System.in);
         String codigoBuscado;
@@ -176,10 +175,11 @@ public class Embalse {
         }         
     }//Fin Método 1
     
-    //Método 2. Generar Informe por Rango de Turbidez
+    //Switch Método 2. Generar Informe por Rango de Turbidez
     public static void InformeTurbidez (int numEmb,int nivTurbidez[],String codigo[],String clasif[]){
         Scanner teclado= new Scanner(System.in);
         int numMin,numMax;
+        int cont=0;
         boolean encontrado=false;
         
         //Pedir NTU
@@ -192,14 +192,15 @@ public class Embalse {
         for (int i = 0; i < numEmb; i++) {
             if(nivTurbidez[i]>=numMin && nivTurbidez[i]<=numMax){
                System.out.printf("Código: %-8s NTU: %-5d Clasificación: %-15s%n", codigo[i], nivTurbidez[i], clasif[i]);
-               encontrado=true;
+               cont++;
+               encontrado=true; 
             } 
-        }
-        
+        }     
         if(encontrado==false){
-            System.out.println("Embalse no registrado...Por favor verifique");
+            System.out.println("No se encontraron embalses en este rango de Turbidez...Por favor verifique");
+        }else{
+            System.out.println("Estos Embalses Represenan el: "+(cont*100/numEmb)+"% respecto al total");
         }
-  
-    }
+    }//Fin Método 2
     
 }//Clase 

@@ -6,7 +6,7 @@ import javax.swing.JOptionPane;
 
 public class Embalse {
     //No lleva atributos, solo variables
-    public static int numEmb=5;
+    public static int numEmb=3;
     
     //Creacion los vectores, en Java los vectores son objetos, por lo tanto su declaracion e inicializacion
     //se pueden hacer en un solo paso o por separado (conmunmente en la misma linea).
@@ -23,7 +23,7 @@ public class Embalse {
         System.setOut(new java.io.PrintStream(System.out,true,java.nio.charset.StandardCharsets.UTF_8));
         //Crear un objeto de la clase Scanner
         Scanner teclado= new Scanner(System.in);
-        //Declaracion de las variables del main
+        //Declaracion de las variables del main (Primer y Segunda Parte)
         int acumTurbidez=0;
         int min=100000,max=0;
         int contAzul=0,contVerde=0,contAmarillo=0,contNaranja=0,contRojo=0;
@@ -40,9 +40,7 @@ public class Embalse {
             String tur=JOptionPane.showInputDialog(null,"Ingrese el Nivel de Turbidez","Registro de Embalses",JOptionPane.QUESTION_MESSAGE);
             nivturbidez[i]=Integer.parseInt(tur);
             acumTurbidez+=nivturbidez[i];
-            //Para atrapar el salto de linea flotante
-            teclado.nextLine();
-            
+          
             //If Max y min
             if(nivturbidez[i]>max){
                 max=nivturbidez[i];
@@ -96,6 +94,7 @@ public class Embalse {
         }
         System.out.println("****************************************************");
         System.out.println("\n");
+        
         System.out.println("***************************************************");
         System.out.println("           Análisis Estadístico y Reporte          ");
         System.out.println("***************************************************");
@@ -119,8 +118,88 @@ public class Embalse {
         System.out.println("****************************************************");
         System.out.println("\n");
         
+        
         //Menú Intercativo y Switch Case
-        System.out.println("Hola Mariangel");
-    } 
+       //Declaracion de Variables 3ra y 4ta parte
+       int op;
+       
+       do{
+           System.out.println("***************************************************");
+           System.out.println("                  Menú de Opciones                 ");
+           System.out.println("***************************************************");
+           System.out.println("*** 1. Buscar Embalse por Código                ***");
+           System.out.println("*** 2. Generar Informe                          ***");
+           System.out.println("*** 3.Continuar                                 ***");
+           System.out.println("***************************************************");
+           System.out.println("Ingrese su Opcion: ");
+           op=teclado.nextInt();
+           
+           switch(op){
+               case 1:
+                buscarCodigo(codigo,numEmb,nivturbidez,estdAlerta);
+                break;
+               case 2:
+                InformeTurbidez(numEmb,nivturbidez,codigo,clasificacion);
+                break;
+           }
+           
+       }while(op!=3); 
+        
+        
+        
+    }//Main
     
-}
+    //Métodos (Switch)
+    
+    //Metodo 1. Buscar Codigo
+    public static void buscarCodigo(String codigo[],int numEmb,int turbidez[],String alerta[]){
+        Scanner teclado = new Scanner(System.in);
+        String codigoBuscado;
+        boolean encontrado=false;
+        
+        //Pedir el codigo a buscar
+        System.out.println("Ingrese el codigo a consultar: ");
+        codigoBuscado=teclado.nextLine();
+        
+        //Buscar el codgio en el vector (se paso por referencia)
+        for (int i = 0; i < numEmb; i++) {
+            if(codigoBuscado.equalsIgnoreCase(codigo[i])){
+                System.out.println("Código Buscado: "+codigo[i]);
+                System.out.println("Nivel de Turbidez: "+turbidez[i]);
+                System.out.println("Clasificacion de Alerta: "+alerta[i]);
+                encontrado=true;
+                break;
+            }
+        }//Si salio del for y no enocntro coinidencia, entonces encontrado es falso
+        if(encontrado==false){
+            System.out.println("Embalse no registrado...Por favor verifique");
+        }         
+    }//Fin Método 1
+    
+    //Método 2. Generar Informe por Rango de Turbidez
+    public static void InformeTurbidez (int numEmb,int nivTurbidez[],String codigo[],String clasif[]){
+        Scanner teclado= new Scanner(System.in);
+        int numMin,numMax;
+        boolean encontrado=false;
+        
+        //Pedir NTU
+        System.out.print("Ingrese el Valor Mínimo de NTU: ");
+        numMin=teclado.nextInt();
+        System.out.print("Ingrese el Valor Máximo de NTU: ");
+        numMax=teclado.nextInt();
+        
+        //Buscar y Listar los códigos
+        for (int i = 0; i < numEmb; i++) {
+            if(nivTurbidez[i]>=numMin && nivTurbidez[i]<=numMax){
+               System.out.printf("Código: %-8s NTU: %-5d Clasificación: %-15s%n", codigo[i], nivTurbidez[i], clasif[i]);
+               encontrado=true;
+            } 
+        }
+        
+        if(encontrado==false){
+            System.out.println("Embalse no registrado...Por favor verifique");
+        }
+  
+    }
+    
+}//Clase 

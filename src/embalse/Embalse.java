@@ -6,7 +6,7 @@ import javax.swing.JOptionPane;
 
 public class Embalse {
     //No lleva atributos, solo variables
-    public static int numEmb=6;
+    public static int numEmb=3;
     
     //Creacion los vectores, en Java los vectores son objetos, por lo tanto su declaracion e inicializacion
     //se pueden hacer en un solo paso o por separado (conmunmente en la misma linea).
@@ -14,6 +14,9 @@ public class Embalse {
     public static int[] nivturbidez = new int[numEmb];
     public static String[] clasificacion = new String[numEmb];
     public static String[] estdAlerta = new String[numEmb];
+    
+    //arreglo para cargar datos historicos del mes pasado
+    public static int[] turbidezMesPasado = new int[3];
     
     //Todo el código debe ir dentro de la clase (no se van a usar nada externo)
     //Metodo Principal o Main
@@ -29,15 +32,34 @@ public class Embalse {
         int contAzul=0,contVerde=0,contAmarillo=0,contNaranja=0,contRojo=0;
         String posCodMax="",posCodMin="";
         
+        //variables parte 4:
+        
+       int aumento=0;
+       int disminuyo =0;
+       int SeMantuvo=0;
+       String MaxIncre="";
+        
         for(int i=0;i<numEmb;i++){
            /* System.out.print("Ingrese el Código del Embalse"+(i+1)+": ");
             codigo[i]=teclado.nextLine();*/
-           codigo[i]=JOptionPane.showInputDialog(null,"Ingrese el Código del Embalse","Registro de Embalses",JOptionPane.QUESTION_MESSAGE);
+           codigo[i]=JOptionPane.showInputDialog(null,"Ingrese el Código del Embalse "+(i+1)+":","Registro de Embalses",JOptionPane.QUESTION_MESSAGE);
+            if (codigo[i]==null) {
+                
+                JOptionPane.showMessageDialog(null, "Operacion Cancelada");
+                return;
+                
+             }
       
             //añadir validacion de los números negativos
             /*System.out.println("Ingrese el Nivel de Tubidez"+(i+1)+": ");   
             nivturbidez[i]=teclado.nextInt();*/
             String tur=JOptionPane.showInputDialog(null,"Ingrese el Nivel de Turbidez","Registro de Embalses",JOptionPane.QUESTION_MESSAGE);
+            if (tur==null) {
+                
+                JOptionPane.showMessageDialog(null, "Operacion Cancelada");
+                return;
+                
+             }
             nivturbidez[i]=Integer.parseInt(tur);
             acumTurbidez+=nivturbidez[i];
           
@@ -123,13 +145,16 @@ public class Embalse {
        //Declaracion de Variables 3ra y 4ta parte
        int op;
        
+       
+       
        do{
            System.out.println("***************************************************");
            System.out.println("                  Menú de Opciones                 ");
            System.out.println("***************************************************");
            System.out.println("*** 1. Buscar Embalse por Código                ***");
            System.out.println("*** 2. Generar Informe                          ***");
-           System.out.println("*** 3.Continuar                                 ***");
+           System.out.println("*** 3.Validacion y Tendencias                   ***");
+            System.out.println("***4.Salir                                      ***");
            System.out.println("***************************************************");
            System.out.println("Ingrese su Opcion: ");
            op=teclado.nextInt();
@@ -141,11 +166,17 @@ public class Embalse {
                case 2:
                     InformeTurbidez(numEmb,nivturbidez,codigo,clasificacion);
                     break;
+               case 3:
+                    CargarDatePasadoMes(MaxIncre, codigo, nivturbidez, turbidezMesPasado, aumento, disminuyo, SeMantuvo);
+                    break;
                default:
-                   System.out.println("Número equivocado, por favor revise las opciones ddel menú");
-                   break;
+                   if (op!=4) {
+                       System.out.println("Número equivocado, por favor revise las opciones del menú");
+                       break;
+                   }
+                   
            }
-       }while(op!=3);     
+       }while(op!=4);     
     }//Main
     
     //Métodos
@@ -202,5 +233,55 @@ public class Embalse {
             System.out.println("Estos Embalses Represenan el: "+(cont*100/numEmb)+"% respecto al total");
         }
     }//Fin Método 2
+    
+    
+    
+    // for. Metodo: 2-Solicitar datos mes pasado 
+    
+    public static void CargarDatePasadoMes(String MaxIncre, String codigo[], int nivturbidez[],int turbidezMesPasado[],int aumento, int disminuyo,int SeMantuvo) {
+        aumento=0;
+        disminuyo=0;
+        SeMantuvo=0;
+        Scanner teclado= new Scanner (System.in);
+        
+        double maximo=0;
+        
+        for (int i = 0; i < numEmb; i++) {
+            
+            System.out.println("Ingrese el NTU del mes pasado del embalse "+(i+1)+":");
+            turbidezMesPasado[i]=teclado.nextInt();
+            teclado.nextLine();
+            
+            if (nivturbidez[i]>turbidezMesPasado[i]) {
+                
+                aumento++;
+                int diferencia = nivturbidez[i] - turbidezMesPasado[i];
+                if (diferencia > maximo) {      
+                   maximo = diferencia;
+                   MaxIncre = codigo[i];
+                    
+                    
+                }
+             
+            }
+            else if(nivturbidez[i]==turbidezMesPasado[i]){
+                SeMantuvo++;
+            
+            }
+            else{
+                disminuyo++;
+            }   
+         }
+        
+         System.out.println("**********VALIDACION DE REPORTE Y TENDENCIAS*******");
+         System.out.println("Cantidad de embalses donde la turbidez aumento:"+aumento);
+         System.out.println("Cantidad de embalses donde la turbidez se redujo:"+disminuyo);
+         System.out.println("Cantidad de embalses donde la turbidez se mantuvo:"+SeMantuvo);
+            
+         System.out.println("El embalse que sufrio el mayor incremento absoluto en su NTU fue:"+MaxIncre);
+        
+        
+        
+     }
     
 }//Clase 
